@@ -47,7 +47,6 @@ def job():
 
 	latest_track_id = latest_tracks[0]['track']['id']
 	
-
 	if latest_track_id in track_ids:
 		print("Track already found, no need to add again")
 		return 
