@@ -54,7 +54,7 @@ def job():
 	print("Added song to playlist")
 
 
-schedule.every(1).minutes.do(job)
+schedule.every(30).seconds.do()
 while True:
     schedule.run_pending()
     time.sleep(1)
