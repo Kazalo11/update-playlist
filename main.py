@@ -15,7 +15,7 @@ def job():
 
 	sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
-	latest_tracks = sp.current_user_saved_tracks(50)['items']
+	latest_tracks = sp.current_user_saved_tracks(10)['items']
 
 	current_playlists = sp.current_user_playlists(10)['items']
 	now = date.today()
@@ -43,18 +43,16 @@ def job():
 	track_ids = [item['track']['id'] for item in playlist_tracks]
 	print(track_ids)
 
-	latest_tracks.sort(key=lambda x: x["added_at"], reverse=True)
-
-	latest_track_id = latest_tracks[0]['track']['id']
-	
-	if latest_track_id in track_ids:
-		print("Track already found, no need to add again")
-		return 
-	sp.playlist_add_items(playlist_id, [f'spotify:track:{latest_track_id}'])
-	print("Added song to playlist")
+	for latest_track in latest_tracks:
+		track_id = latest_track['track']['id']
+		if track_id in track_ids:
+			print("Track already found, no need to add again")
+		else:
+			sp.playlist_add_items(playlist_id, [f'spotify:track:{track_id}'])
+			print(f"Added track ${track_id} to the playlist")
 
 
-schedule.every(30).seconds.do()
+schedule.every(30).seconds.do(job)
 while True:
     schedule.run_pending()
     time.sleep(1)
